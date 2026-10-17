@@ -1,0 +1,85 @@
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --page-bg: #f5dfb8;
+  --focus: #7a3510;
+}
+
+html {
+  min-height: 100%;
+  background: var(--page-bg);
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--page-bg);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/*
+  A arte tem proporção 928:1648. Ela é exibida inteira, sem cortes.
+  Em telas largas, fica centralizada e limitada à altura da janela.
+  Em celulares, ocupa a largura toda para manter a composição proporcional.
+*/
+.page {
+  position: relative;
+  width: min(100%, calc(100vh * 928 / 1648));
+  margin-inline: auto;
+  line-height: 0;
+}
+
+.artwork {
+  display: block;
+  width: 100%;
+  height: auto;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.hotspots {
+  position: absolute;
+  inset: 0;
+}
+
+.hotspot {
+  position: absolute;
+  left: 16.8%;
+  width: 66.8%;
+  top: var(--top);
+  height: var(--height);
+  display: block;
+  border-radius: 999px;
+  background: transparent;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+  cursor: pointer;
+  outline: none;
+}
+
+.hotspot:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+  background: rgb(255 255 255 / 10%);
+}
+
+/* Evita uma área de conteúdo excessivamente estreita em monitores grandes. */
+@media (min-width: 700px) {
+  body {
+    padding: 18px 0;
+  }
+
+  .page {
+    width: min(100%, calc((100vh - 36px) * 928 / 1648));
+    border-radius: 3px;
+    overflow: hidden;
+    box-shadow: 0 12px 45px rgb(102 55 20 / 12%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
