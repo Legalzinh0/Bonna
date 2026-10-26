@@ -20,7 +20,6 @@ document.querySelectorAll("[data-link]").forEach((botao) => {
       botao.rel = "noopener noreferrer";
     }
   } else {
-    // Destino ainda não configurado: não abre uma página falsa.
     botao.addEventListener("click", (evento) => {
       evento.preventDefault();
       alert("Este link ainda será configurado. Edite o arquivo script.js para adicionar o endereço.");

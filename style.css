@@ -1,10 +1,9 @@
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 :root {
   --page-bg: #f5dfb8;
   --focus: #7a3510;
+  --press: rgb(122 53 16 / 12%);
 }
 
 html {
@@ -20,16 +19,13 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-/*
-  A arte tem proporção 928:1648. Ela é exibida inteira, sem cortes.
-  Em telas largas, fica centralizada e limitada à altura da janela.
-  Em celulares, ocupa a largura toda para manter a composição proporcional.
-*/
+/* A arte original permanece intacta e mantém sua proporção. */
 .page {
   position: relative;
   width: min(100%, calc(100vh * 928 / 1648));
   margin-inline: auto;
   line-height: 0;
+  isolation: isolate;
 }
 
 .artwork {
@@ -38,13 +34,17 @@ body {
   height: auto;
   user-select: none;
   -webkit-user-drag: none;
+  transform-origin: center;
+  animation: page-arrive 900ms cubic-bezier(.2,.75,.25,1) both;
 }
 
 .hotspots {
   position: absolute;
   inset: 0;
+  pointer-events: none;
 }
 
+/* Áreas clicáveis transparentes sobre os cinco botões da arte. */
 .hotspot {
   position: absolute;
   left: 16.8%;
@@ -58,20 +58,53 @@ body {
   -webkit-tap-highlight-color: transparent;
   cursor: pointer;
   outline: none;
+  pointer-events: auto;
+  transform-origin: center;
+  opacity: 0;
+  animation: button-enter 700ms cubic-bezier(.18,.8,.25,1) both;
+  animation-delay: calc(450ms + var(--delay));
+  transition: transform 180ms cubic-bezier(.2,.8,.2,1),
+    background-color 180ms ease, box-shadow 180ms ease, filter 180ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .hotspot:hover {
+    transform: scale(1.025);
+    background: rgb(255 255 255 / 9%);
+    box-shadow: 0 5px 18px rgb(103 51 17 / 10%),
+      inset 0 0 0 1px rgb(255 255 255 / 20%);
+    filter: brightness(1.025);
+  }
+}
+
+.hotspot:active {
+  transform: scale(.965);
+  background: var(--press);
+  box-shadow: inset 0 3px 10px rgb(103 51 17 / 10%);
+  transition-duration: 80ms;
 }
 
 .hotspot:focus-visible {
+  opacity: 1;
   outline: 3px solid var(--focus);
   outline-offset: 3px;
   background: rgb(255 255 255 / 10%);
 }
 
-/* Evita uma área de conteúdo excessivamente estreita em monitores grandes. */
-@media (min-width: 700px) {
-  body {
-    padding: 18px 0;
-  }
+@keyframes page-arrive {
+  0% { opacity: 0; transform: translateY(12px) scale(.992); filter: saturate(.94); }
+  65% { opacity: 1; }
+  100% { opacity: 1; transform: translateY(0) scale(1); filter: saturate(1); }
+}
 
+@keyframes button-enter {
+  0% { opacity: 0; transform: translateY(13px) scale(.97); }
+  70% { opacity: 1; transform: translateY(-2px) scale(1.008); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (min-width: 700px) {
+  body { padding: 18px 0; }
   .page {
     width: min(100%, calc((100vh - 36px) * 928 / 1648));
     border-radius: 3px;
@@ -82,4 +115,11 @@ body {
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
+  .artwork, .hotspot {
+    animation: none !important;
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+  .hotspot { transition: none; }
 }
